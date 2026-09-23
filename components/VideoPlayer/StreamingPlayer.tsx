@@ -699,6 +699,8 @@ export const StreamingPlayer: React.FC<VideoPlayerProps> = ({
 
   const [chapters, setChapters] = useState<ChapterMarker[]>([]);
   const [skipToast, setSkipToast] = useState<string | null>(null);
+  const [hasSkippedRecap, setHasSkippedRecap] = useState(false);
+  const [hasSkippedIntro, setHasSkippedIntro] = useState(false);
   const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const showToast = useCallback((msg: string) => {
@@ -706,6 +708,12 @@ export const StreamingPlayer: React.FC<VideoPlayerProps> = ({
     setSkipToast(msg);
     toastTimeoutRef.current = setTimeout(() => setSkipToast(null), 2000);
   }, []);
+
+  // Reset skip states when episode or title changes
+  useEffect(() => {
+    setHasSkippedRecap(false);
+    setHasSkippedIntro(false);
+  }, [title, currentSeason, currentEpisode, subjectId]);
 
   const scanChapters = useCallback(() => {
     const video = videoRef.current;
@@ -768,27 +776,28 @@ export const StreamingPlayer: React.FC<VideoPlayerProps> = ({
   }, [movie, currentSeason, currentEpisode, nextEpisode, title, subTitle]);
 
   const isRecapActive = useMemo(() => {
-    if (isLive || isTrailer) return false;
-    if (activeRecapChapter) return true;
+    if (isLive || isTrailer || hasSkippedRecap) return false;
+    if (activeRecapChapter && currentTime < activeRecapChapter.endTime) return true;
     return isSeries && currentTime >= 0 && currentTime < 35 && (duration === 0 || duration > 120);
-  }, [isLive, isTrailer, activeRecapChapter, isSeries, currentTime, duration]);
+  }, [isLive, isTrailer, hasSkippedRecap, activeRecapChapter, isSeries, currentTime, duration]);
 
   const isIntroActive = useMemo(() => {
-    if (isLive || isTrailer) return false;
-    if (activeIntroChapter) return true;
+    if (isLive || isTrailer || hasSkippedIntro) return false;
+    if (activeIntroChapter && currentTime < activeIntroChapter.endTime) return true;
     if (isRecapActive && currentTime < 20) return false;
-    return isSeries && currentTime >= 5 && currentTime <= 180 && (duration === 0 || duration > 240);
-  }, [isLive, isTrailer, activeIntroChapter, isRecapActive, isSeries, currentTime, duration]);
+    return isSeries && currentTime >= 10 && currentTime <= 95 && (duration === 0 || duration > 240);
+  }, [isLive, isTrailer, hasSkippedIntro, activeIntroChapter, isRecapActive, isSeries, currentTime, duration]);
 
   const handleSkipRecap = useCallback(() => {
     const video = videoRef.current;
     if (!video) return;
+    setHasSkippedRecap(true);
     triggerHaptic('medium');
     let targetTime = 35;
     if (activeRecapChapter) {
       targetTime = activeRecapChapter.endTime;
     } else {
-      targetTime = Math.min(video.currentTime + 35, duration > 0 ? duration : Infinity);
+      targetTime = Math.min(video.currentTime + 35, duration > 0 ? duration : 35);
     }
     video.currentTime = targetTime;
     setCurrentTime(targetTime);
@@ -800,6 +809,7 @@ export const StreamingPlayer: React.FC<VideoPlayerProps> = ({
   const handleSkipIntro = useCallback(() => {
     const video = videoRef.current;
     if (!video) return;
+    setHasSkippedIntro(true);
     triggerHaptic('medium');
     let targetTime = video.currentTime + 85;
     if (activeIntroChapter) {
@@ -857,6 +867,27 @@ export const StreamingPlayer: React.FC<VideoPlayerProps> = ({
     <div 
       ref={containerRef} 
       onMouseMove={handleMouseMove}
+      onClick={(e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest('.video-hud-controls') || target.closest('button') || target.closest('input') || target.closest('div[role="dialog"]') || target.closest('.modal-content')) {
+          return;
+        }
+        const rect = containerRef.current?.getBoundingClientRect();
+        if (!rect) {
+          setShowControls(prev => !prev);
+          return;
+        }
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const width = rect.width;
+        const height = rect.height;
+        const isCenter = x >= width * 0.3 && x <= width * 0.7 && y >= height * 0.3 && y <= height * 0.7;
+        if (isCenter) {
+          togglePlay();
+        } else {
+          setShowControls(prev => !prev);
+        }
+      }}
       style={isForcedLandscape && typeof window !== 'undefined' && window.innerHeight > window.innerWidth ? {
         width: '100vh',
         height: '100vw',
@@ -874,6 +905,17 @@ export const StreamingPlayer: React.FC<VideoPlayerProps> = ({
           : "fixed inset-0 z-[2000] bg-black group overflow-hidden"
       } 
     >
+      <style>{`
+        video::cue {
+          background-color: rgba(255, 255, 255, 0.95) !important;
+          color: #000000 !important;
+          font-weight: 700 !important;
+          font-size: 1.15rem !important;
+          font-family: system-ui, -apple-system, sans-serif !important;
+          padding: 6px 12px !important;
+          border-radius: 6px !important;
+        }
+      `}</style>
       <video
         ref={videoRef}
         className={`w-full h-full ${resizeMode === 'cover' ? 'object-cover' : 'object-contain'}`}
@@ -921,44 +963,7 @@ export const StreamingPlayer: React.FC<VideoPlayerProps> = ({
         </div>
       )}
 
-      {/* Floating Skip Intro & Skip Recap Buttons */}
-      {!minimized && !locked && (
-        <>
-          {isRecapActive && (
-            <div className="absolute bottom-20 right-5 md:bottom-24 md:right-8 z-30 pointer-events-auto">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSkipRecap();
-                }}
-                className="flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 bg-black/85 hover:bg-white text-white hover:text-black border border-white/25 rounded-xl font-bold text-xs md:text-sm tracking-wide shadow-2xl backdrop-blur-md transition-all duration-200 transform hover:scale-105 active:scale-95 cursor-pointer"
-                title="Skip Recap"
-              >
-                <i className="fa-solid fa-angles-right text-primary"></i>
-                <span>Skip Recap</span>
-              </button>
-            </div>
-          )}
-          {isIntroActive && !isRecapActive && (
-            <div className="absolute bottom-20 right-5 md:bottom-24 md:right-8 z-30 pointer-events-auto">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSkipIntro();
-                }}
-                className="flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 bg-black/85 hover:bg-white text-white hover:text-black border border-white/25 rounded-xl font-bold text-xs md:text-sm tracking-wide shadow-2xl backdrop-blur-md transition-all duration-200 transform hover:scale-105 active:scale-95 cursor-pointer"
-                title="Skip Intro (+85s)"
-              >
-                <i className="fa-solid fa-forward-step text-primary"></i>
-                <span>Skip Intro</span>
-                <span className="text-[10px] md:text-[11px] font-semibold opacity-75 bg-white/10 px-1.5 py-0.5 rounded">
-                  +85s
-                </span>
-              </button>
-            </div>
-          )}
-        </>
-      )}
+
       
       {isBuffering && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-xs z-20">
