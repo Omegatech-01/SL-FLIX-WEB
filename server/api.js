@@ -1144,6 +1144,38 @@ router.get('/anime/home', async (req, res) => {
     }
 });
 
+router.get('/anime/crunchyroll', async (req, res) => {
+    try {
+        const { action = 'search', q, crSeriesId, crSeasonId, tmdbId, se, ep, crId } = req.query;
+        let targetUrl = `https://api.omegatech.app/api/Anime/Crunchyroll?action=${encodeURIComponent(action)}`;
+        if (q) targetUrl += `&q=${encodeURIComponent(q)}`;
+        if (crSeriesId) targetUrl += `&crSeriesId=${encodeURIComponent(crSeriesId)}`;
+        if (crSeasonId) targetUrl += `&crSeasonId=${encodeURIComponent(crSeasonId)}`;
+        if (tmdbId) targetUrl += `&tmdbId=${encodeURIComponent(tmdbId)}`;
+        if (se) targetUrl += `&se=${encodeURIComponent(se)}`;
+        if (ep) targetUrl += `&ep=${encodeURIComponent(ep)}`;
+        if (crId) targetUrl += `&crId=${encodeURIComponent(crId)}`;
+
+        const cacheKey = `crunchyroll_${action}_${q || ''}_${crSeriesId || ''}_${crSeasonId || ''}_${tmdbId || ''}_${se || ''}_${ep || ''}_${crId || ''}`;
+        const cached = cache.get(cacheKey);
+        if (cached) return res.json(cached);
+
+        const response = await fetch(targetUrl, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'Origin': 'https://moviebox.ph',
+                'Referer': 'https://moviebox.ph/'
+            },
+            signal: AbortSignal.timeout(10000)
+        });
+        const data = await response.json();
+        cache.set(cacheKey, data, 600);
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 router.get('/anime/search', async (req, res) => {
     const { query } = req.query;
     if (!query) return res.json({ success: true, data: [] });
@@ -1152,7 +1184,34 @@ router.get('/anime/search', async (req, res) => {
         const cached = cache.get(cacheKey);
         if (cached) return res.json(cached);
 
-        // 1. Try Omegatech Oploverz search
+        // 1. Try Crunchyroll API search first
+        try {
+            const crRes = await fetch(`https://api.omegatech.app/api/Anime/Crunchyroll?action=search&q=${encodeURIComponent(query)}`, {
+                signal: AbortSignal.timeout(8000),
+                headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+            });
+            if (crRes.ok) {
+                const crJson = await crRes.json();
+                const list = crJson.data?.results || [];
+                if (Array.isArray(list) && list.length > 0) {
+                    const normalized = list.map(item => ({
+                        title: item.title,
+                        image: item.poster || item.cover || 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800',
+                        link: item.crId || item.slug || item.title,
+                        synopsis: item.description || '',
+                        crId: item.crId,
+                        type: item.type
+                    }));
+                    const result = { success: true, data: normalized };
+                    cache.set(cacheKey, result, 600);
+                    return res.json(result);
+                }
+            }
+        } catch (e) {
+            console.error('[ANIME] Crunchyroll search error:', e.message);
+        }
+
+        // 2. Try Omegatech Oploverz search
         try {
             const opRes = await fetch(`https://api.omegatech.app/api/Anime/Oploverz?action=search&query=${encodeURIComponent(query)}`, {
                 signal: AbortSignal.timeout(8000),

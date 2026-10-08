@@ -790,24 +790,21 @@ export const ApiService = {
             return cached.data;
         }
         try {
-            let data = await fetchJson(`/api/anime/search?query=${encodeURIComponent(query)}`);
+            let data = await fetchJson(`/api/anime/crunchyroll?action=search&q=${encodeURIComponent(query)}`);
             let items: AnimeItem[] = [];
-            if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
-                items = data.data;
-            } else if (Array.isArray(data) && data.length > 0) {
-                items = data;
+            if (data && data.success && data.data && Array.isArray(data.data.results)) {
+                items = data.data.results.map((it: any) => ({
+                    title: it.title,
+                    image: it.poster || it.cover || 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800',
+                    link: it.crId || it.slug || it.title,
+                    synopsis: it.description || '',
+                    crId: it.crId,
+                    type: it.type
+                }));
             } else {
-                try {
-                    const directRes = await fetch(`https://api.omegatech.app/api/Anime/Oploverz?action=search&query=${encodeURIComponent(query)}`);
-                    const directJson = await directRes.json();
-                    const list = directJson.data?.data || directJson.data?.results || [];
-                    if (Array.isArray(list)) {
-                        items = list.map((it: any) => ({ title: it.title, image: it.poster || it.image, link: it.url || '' }));
-                    }
-                } catch (e1) {
-                    const directRes = await fetch(`https://api.omegatech.app/api/Anime/Nimegami?action=search&query=${encodeURIComponent(query)}`);
-                    const directJson = await directRes.json();
-                    if (directJson && directJson.data) items = directJson.data;
+                const fallbackData = await fetchJson(`/api/anime/search?query=${encodeURIComponent(query)}`);
+                if (fallbackData && fallbackData.success && Array.isArray(fallbackData.data) && fallbackData.data.length > 0) {
+                    items = fallbackData.data;
                 }
             }
             const result = { results: items };
@@ -815,14 +812,6 @@ export const ApiService = {
             return result;
         } catch (e) {
             console.error('[API] Failed to search anime:', e);
-            try {
-                const directRes = await fetch(`https://api.omegatech.app/api/Anime/Oploverz?action=search&query=${encodeURIComponent(query)}`);
-                const directJson = await directRes.json();
-                const list = directJson.data?.data || directJson.data?.results || [];
-                if (Array.isArray(list)) {
-                    return { results: list.map((it: any) => ({ title: it.title, image: it.poster || it.image, link: it.url || '' })) };
-                }
-            } catch (err) {}
             return { results: [] };
         }
     },
