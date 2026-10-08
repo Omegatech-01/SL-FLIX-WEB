@@ -343,14 +343,18 @@ export const VideoHud: React.FC<VideoHudProps> = ({
                   e.stopPropagation();
                   onToggleSubtitles();
                 }}
-                className={`w-7 h-7 md:w-8 md:h-8 rounded-lg flex items-center justify-center transition-all ${
+                onTouchEnd={(e) => {
+                  e.stopPropagation();
+                  onToggleSubtitles();
+                }}
+                className={`w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center transition-all cursor-pointer touch-manipulation select-none ${
                   activeSubtitle >= 0 
                     ? 'bg-primary text-black font-extrabold shadow-md shadow-primary/30' 
-                    : 'text-gray-400 hover:text-white hover:bg-white/10'
+                    : 'text-gray-300 hover:text-white hover:bg-white/10 bg-black/40'
                 }`}
                 title="Toggle Subtitles (C)"
               >
-                <span className="text-[11px] font-black tracking-tighter">CC</span>
+                <span className="text-xs font-black tracking-tighter">CC</span>
               </button>
 
               <button

@@ -80,8 +80,8 @@ function Dock({
   const mouseX = useMotionValue(Infinity);
   const isHovered = useMotionValue(0);
   const maxHeight = useMemo(() => {
-    return Math.max(DOCK_HEIGHT, magnification + magnification / 2 + 4);
-  }, [magnification]);
+    return Math.max(panelHeight + 10, magnification + 10);
+  }, [magnification, panelHeight]);
   const heightRow = useTransform(isHovered, [0, 1], [panelHeight, maxHeight]);
   const height = useSpring(heightRow, spring);
   return (
@@ -90,7 +90,7 @@ function Dock({
         height: height,
         scrollbarWidth: 'none',
       }}
-      className='mx-2 flex max-w-full items-end overflow-x-auto'
+      className='mx-auto flex max-w-full items-end overflow-x-auto px-2 pb-1 justify-center'
     >
       <motion.div
         onMouseMove={({ pageX }) => {
@@ -102,7 +102,7 @@ function Dock({
           mouseX.set(Infinity);
         }}
         className={cn(
-          'mx-auto flex w-fit gap-4 rounded-2xl bg-[#141414]/90 backdrop-blur-xl border border-white/10 px-4 py-2',
+          'flex w-fit gap-1 md:gap-3 rounded-2xl bg-[#121212]/95 backdrop-blur-2xl border border-white/15 px-2 py-1 md:px-4 md:py-2 items-center shadow-[0_10px_30px_rgba(0,0,0,0.9)]',
           className
         )}
         style={{ height: panelHeight }}
@@ -127,7 +127,7 @@ function DockItem({ children, className, onClick }: DockItemProps) {
   const widthTransform = useTransform(
     mouseDistance,
     [-distance, 0, distance],
-    [40, magnification, 40]
+    [36, magnification, 36]
   );
   const width = useSpring(widthTransform, spring);
   return (
@@ -139,8 +139,12 @@ function DockItem({ children, className, onClick }: DockItemProps) {
       onFocus={() => isHovered.set(1)}
       onBlur={() => isHovered.set(0)}
       onClick={onClick}
+      onTouchEnd={(e) => {
+        e.preventDefault();
+        onClick?.();
+      }}
       className={cn(
-        'relative inline-flex items-center justify-center cursor-pointer',
+        'relative inline-flex items-center justify-center cursor-pointer touch-manipulation select-none py-1',
         className
       )}
       tabIndex={0}

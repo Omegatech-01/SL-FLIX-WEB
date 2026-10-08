@@ -8,6 +8,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SLFLIX PRO">
     <meta name="description" content="SLFLIX PRO - The ultimate destination for premium movie and series streaming. Watch the latest films, TV shows, and live sports in stunning HD without ads.">
     <meta name="keywords" content="premium streaming, free movies, watch series online, live tv, hd movies, slflix pro, moviebox, anime streaming">
     <meta name="robots" content="index, follow, max-image-preview:large">
@@ -21,7 +22,7 @@
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
 
-    <meta property="og:url" content="https://sl-flix.dixonomega.tech">
+    <meta property="og:url" content="/">
     
     <!-- Twitter Tags -->
     <meta name="twitter:card" content="summary_large_image">
@@ -150,6 +151,19 @@
         @-webkit-keyframes pathCircle { 25% { stroke-dashoffset: 125; } 50% { stroke-dashoffset: 175; } 75% { stroke-dashoffset: 225; } 100% { stroke-dashoffset: 275; } }
         @keyframes pathCircle { 25% { stroke-dashoffset: 125; } 50% { stroke-dashoffset: 175; } 75% { stroke-dashoffset: 225; } 100% { stroke-dashoffset: 275; } }
 
+        html, body, #root {
+            overscroll-behavior: none;
+            touch-action: manipulation;
+            width: 100%;
+            height: 100%;
+            background-color: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
             background-color: #0a0a0a;
             color: #ffffff;
@@ -157,6 +171,7 @@
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: none;
         }
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -179,6 +194,26 @@
         }
         .pt-safe {
             padding-top: env(safe-area-inset-top);
+        }
+
+        /* Modern Premium Skeleton Shimmer Effect */
+        @keyframes skeleton-shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        .skeleton-shimmer {
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0.03) 0%,
+                rgba(255, 255, 255, 0.08) 50%,
+                rgba(255, 255, 255, 0.03) 100%
+            );
+            background-size: 200% 100%;
+            animation: skeleton-shimmer 1.8s ease-in-out infinite;
         }
     </style>
 </head>

@@ -250,18 +250,35 @@ export const AnimeDetailView: React.FC<AnimeDetailViewProps> = ({
         <div className="bg-[#0b0c20] rounded-3xl border border-white/15 overflow-hidden shadow-2xl relative">
           <div className="aspect-video w-full bg-black relative flex items-center justify-center overflow-hidden">
             {loading ? (
-              <div className="flex flex-col items-center justify-center p-8 text-center">
-                <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-                <p className="text-gray-300 text-xs font-bold uppercase tracking-wider animate-pulse">
-                  Summoning Anime Video Streams...
-                </p>
+              <div className="w-full h-full p-6 flex flex-col justify-between skeleton-shimmer bg-[#080918]">
+                <div className="flex items-center justify-between">
+                  <div className="h-6 w-36 rounded-lg bg-white/10 animate-pulse" />
+                  <div className="h-6 w-20 rounded-lg bg-white/10 animate-pulse" />
+                </div>
+                <div className="flex flex-col items-center justify-center space-y-3">
+                  <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center animate-pulse">
+                    <Play size={24} className="text-primary/40 ml-1 fill-primary/30" />
+                  </div>
+                  <p className="text-gray-300 text-xs font-bold uppercase tracking-wider animate-pulse">
+                    Loading Anime Streams & Mirrors...
+                  </p>
+                </div>
+                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-full w-1/3 bg-primary/40 rounded-full animate-pulse" />
+                </div>
               </div>
             ) : resolvingStream ? (
-              <div className="flex flex-col items-center justify-center p-8 text-center">
-                <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin mb-3" />
-                <p className="text-gray-300 text-xs font-bold animate-pulse">
-                  Connecting to server mirror: {currentServer?.server || 'Stream CDN'}...
-                </p>
+              <div className="w-full h-full p-6 flex flex-col justify-between skeleton-shimmer bg-[#080918]">
+                <div className="h-5 w-28 rounded bg-white/10 animate-pulse" />
+                <div className="flex flex-col items-center justify-center space-y-3">
+                  <div className="w-12 h-12 rounded-full border border-primary/30 flex items-center justify-center animate-pulse">
+                    <Radio size={20} className="text-primary/70 animate-pulse" />
+                  </div>
+                  <p className="text-xs text-primary font-mono tracking-wider animate-pulse">
+                    Connecting to server mirror: {currentServer?.server || 'Stream CDN'}...
+                  </p>
+                </div>
+                <div className="h-1 w-full bg-white/5" />
               </div>
             ) : playerMode === 'video' && streamSourceUrl ? (
               <div className="relative w-full h-full group bg-black flex items-center justify-center">

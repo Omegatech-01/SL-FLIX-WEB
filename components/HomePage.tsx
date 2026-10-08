@@ -255,48 +255,21 @@ const CategoryRow: React.FC<{ data: CategoryData, onMovieClick: (m: MovieResult)
           </button>
         )}
       </div>
-      {movies.length > 15 ? (
-        <div className="space-y-6">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-6 md:gap-x-5 md:gap-y-6">
-            {movies.map((m, i) => (
-              <div key={`${m.subjectId}-${i}`} className="w-full">
-                <MovieCard movie={m} onClick={onMovieClick} />
-              </div>
-            ))}
-          </div>
-          <div ref={gridLoadMoreRef} className="w-full flex justify-center py-6">
-            {isLoadingMore && <Loader type="circle" inline />}
-            {!hasMore && movies.length > 0 && (
-              <p className="text-gray-500 text-xs uppercase tracking-wider font-bold">No more content</p>
-            )}
-          </div>
+      <div className="space-y-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-6 md:gap-x-5 md:gap-y-6">
+          {movies.map((m, i) => (
+            <div key={`${m.subjectId}-${i}`} className="w-full">
+              <MovieCard movie={m} onClick={onMovieClick} />
+            </div>
+          ))}
         </div>
-      ) : (
-        <div className="relative group">
-          {showLeftArrow && movies.length > 4 && (
-            <button onClick={() => scroll('left')} className="absolute left-0 top-0 bottom-4 w-8 bg-gradient-to-r from-[#0a0a15] to-transparent z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <i className="fa-solid fa-chevron-left text-white"></i>
-            </button>
-          )}
-          <div ref={scrollRef} onScroll={checkScroll} className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide scroll-smooth">
-            {movies.map((m, i) => (
-              <div key={`${m.subjectId}-${i}`} className="flex-none w-[140px] md:w-[180px]">
-                <MovieCard movie={m} onClick={onMovieClick} />
-              </div>
-            ))}
-            {isLoadingMore && (
-              <div className="flex-none w-[140px] md:w-[180px] flex items-center justify-center">
-                <Loader type="circle" inline />
-              </div>
-            )}
-          </div>
-          {showRightArrow && movies.length > 4 && (
-            <button onClick={() => scroll('right')} className="absolute right-0 top-0 bottom-4 w-8 bg-gradient-to-l from-[#0a0a15] to-transparent z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <i className="fa-solid fa-chevron-right text-white"></i>
-            </button>
+        <div ref={gridLoadMoreRef} className="w-full flex justify-center py-6">
+          {isLoadingMore && <Loader type="circle" inline />}
+          {!hasMore && movies.length > 0 && (
+            <p className="text-gray-500 text-xs uppercase tracking-wider font-bold">No more content</p>
           )}
         </div>
-      )}
+      </div>
     </div>
   );
 };

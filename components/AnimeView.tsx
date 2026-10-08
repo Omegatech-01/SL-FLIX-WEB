@@ -230,13 +230,39 @@ export const AnimeView: React.FC<AnimeViewProps> = ({ onBack, onPlayStream }) =>
           </div>
         )}
 
-        {/* Loading State */}
+        {/* Skeleton Loading State Grid */}
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-32">
-            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-            <p className="text-gray-400 text-xs font-bold uppercase tracking-widest animate-pulse">
-              Summoning Anime Channels & Streams...
-            </p>
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-7 bg-primary/40 rounded-full animate-pulse" />
+                <div className="h-6 w-52 rounded-lg skeleton-shimmer" />
+              </div>
+              <div className="h-5 w-28 rounded-full skeleton-shimmer hidden sm:block" />
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-5">
+              {Array.from({ length: 12 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden flex flex-col shadow-xl"
+                >
+                  <div className="relative aspect-[3/4] overflow-hidden skeleton-shimmer">
+                    <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/40 border border-white/10 w-16 h-4 skeleton-shimmer" />
+                  </div>
+                  <div className="p-3 flex-1 flex flex-col justify-between space-y-3">
+                    <div className="space-y-1.5">
+                      <div className="h-3 w-4/5 rounded skeleton-shimmer" />
+                      <div className="h-3 w-3/5 rounded skeleton-shimmer" />
+                    </div>
+                    <div className="flex items-center justify-between pt-2 border-t border-white/5">
+                      <div className="h-2.5 w-14 rounded skeleton-shimmer" />
+                      <div className="h-2.5 w-10 rounded skeleton-shimmer" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         ) : (
           <>
@@ -323,8 +349,8 @@ const AnimeCard: React.FC<{ item: AnimeItem; onClick: () => void }> = ({ item, o
           {item.title}
         </h3>
         <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/5 text-[10px] text-gray-400">
-          <span className="flex items-center gap-1 text-primary">
-            <Tv size={11} /> Nimegami
+          <span className="flex items-center gap-1 text-primary font-bold">
+            <Tv size={11} /> Sub Indo
           </span>
           <span className="font-semibold text-gray-500 hover:text-white flex items-center gap-1">
             <Download size={10} /> MP4

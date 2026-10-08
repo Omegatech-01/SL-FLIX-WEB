@@ -872,6 +872,10 @@ export const StreamingPlayer: React.FC<VideoPlayerProps> = ({
         if (target.closest('.video-hud-controls') || target.closest('button') || target.closest('input') || target.closest('div[role="dialog"]') || target.closest('.modal-content')) {
           return;
         }
+        if (!showControls) {
+          setShowControls(true);
+          return;
+        }
         const rect = containerRef.current?.getBoundingClientRect();
         if (!rect) {
           setShowControls(prev => !prev);
@@ -881,7 +885,7 @@ export const StreamingPlayer: React.FC<VideoPlayerProps> = ({
         const y = e.clientY - rect.top;
         const width = rect.width;
         const height = rect.height;
-        const isCenter = x >= width * 0.3 && x <= width * 0.7 && y >= height * 0.3 && y <= height * 0.7;
+        const isCenter = x >= width * 0.25 && x <= width * 0.75 && y >= height * 0.25 && y <= height * 0.75;
         if (isCenter) {
           togglePlay();
         } else {
@@ -973,7 +977,7 @@ export const StreamingPlayer: React.FC<VideoPlayerProps> = ({
 
       {/* Render active subtitle cue text on screen */}
       {activeSubtitleCue && (
-        <div className="absolute bottom-16 md:bottom-24 left-4 right-4 z-20 pointer-events-none flex justify-center text-center">
+        <div className="absolute bottom-4 md:bottom-12 left-4 right-4 z-20 pointer-events-none flex justify-center text-center">
           <span 
             className="px-4 py-2 rounded-xl max-w-[90%] text-base md:text-xl font-semibold leading-relaxed tracking-wide select-none"
             style={{

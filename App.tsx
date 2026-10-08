@@ -510,36 +510,95 @@ const DetailsView: React.FC<{ movie: MovieResult, onBack: () => void,
     const currentRecs = movie.recommendations?.slice(recPage * recsPerPage, (recPage + 1) * recsPerPage) || [];
     if (!movie || loading || !movie.title || movie.title === "Loading...") {
         return (
-            <div className="min-h-screen bg-[#0a0a15] animate-fade-in pb-20">
-                <div className="relative h-[40vh] md:h-[60vh]">
+            <div className="min-h-screen bg-[#0a0a15] animate-fade-in pb-20 relative">
+                {/* Hero Backdrop & Poster Skeleton */}
+                <div className="relative h-[40vh] md:h-[60vh] overflow-hidden">
                     <div className="absolute top-4 left-4 z-20">
-                        <button className="bg-black/40 backdrop-blur-md border border-white/10 w-10 h-10 rounded-full text-white flex items-center justify-center">
+                        <button onClick={onBack} className="bg-black/40 backdrop-blur-md border border-white/10 w-10 h-10 rounded-full text-white flex items-center justify-center hover:bg-white/20 transition-colors">
                             <BackIcon className="w-5 h-5" />
                         </button>
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a15] via-[#0a0a15]/40 to-transparent"></div>
-                    <div className="absolute bottom-0 left-0 w-full p-[4%] flex flex-col md:flex-row items-end gap-6">
-                        <div className="hidden md:block w-[200px] h-[280px] rounded-xl bg-white/10 animate-pulse"></div>
-                        <div className="flex-1 space-y-4">
-                            <div className="h-10 md:h-14 w-3/4 bg-white/10 rounded-lg animate-pulse"></div>
-                            <div className="h-6 w-1/2 bg-white/10 rounded animate-pulse"></div>
-                            <div className="h-12 w-40 bg-white/10 rounded-full animate-pulse"></div>
+                    <div className="absolute inset-0 skeleton-shimmer bg-[#0f1026]"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a15] via-[#0a0a15]/50 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 w-full p-[4%] flex flex-col md:flex-row items-end gap-6 z-10">
+                        {/* Poster Card Skeleton */}
+                        <div className="hidden md:block w-[200px] h-[280px] rounded-2xl skeleton-shimmer bg-white/10 border border-white/15 shadow-2xl flex-shrink-0"></div>
+                        <div className="flex-1 space-y-4 w-full">
+                            {/* Title Skeleton */}
+                            <div className="h-9 md:h-12 w-3/4 max-w-lg rounded-xl skeleton-shimmer bg-white/15"></div>
+                            {/* Metadata Badges Skeleton */}
+                            <div className="flex items-center gap-3">
+                                <div className="h-5 w-16 rounded-md skeleton-shimmer bg-white/10"></div>
+                                <div className="h-5 w-14 rounded-md skeleton-shimmer bg-white/10"></div>
+                                <div className="h-5 w-20 rounded-md skeleton-shimmer bg-white/10"></div>
+                                <div className="h-5 w-24 rounded-md skeleton-shimmer bg-white/10"></div>
+                            </div>
+                            {/* Action Buttons Skeleton */}
+                            <div className="flex gap-4 flex-wrap pt-2">
+                                <div className="h-12 w-32 rounded-full skeleton-shimmer bg-primary/20 border border-primary/30"></div>
+                                <div className="h-12 w-28 rounded-full skeleton-shimmer bg-white/10"></div>
+                                <div className="h-12 w-28 rounded-full skeleton-shimmer bg-white/10"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div className="px-[4%] mt-8 space-y-6">
-                    <div className="h-48 bg-white/5 rounded-xl border border-white/10 p-6">
-                        <div className="h-6 w-24 bg-white/10 rounded mb-4 animate-pulse"></div>
-                        <div className="space-y-2">
-                            <div className="h-4 w-full bg-white/10 rounded animate-pulse"></div>
-                            <div className="h-4 w-full bg-white/10 rounded animate-pulse"></div>
-                            <div className="h-4 w-3/4 bg-white/10 rounded animate-pulse"></div>
+
+                {/* Main Content Layout Grid */}
+                <div className="px-[4%] mt-6 grid grid-cols-1 lg:grid-cols-3 gap-10">
+                    {/* Left Column: Synopsis, Cast, Episodes */}
+                    <div className="lg:col-span-2 space-y-8">
+                        {/* Synopsis Skeleton */}
+                        <div className="bg-[#1a1a2e]/60 p-6 rounded-2xl border border-white/5 space-y-3">
+                            <div className="h-5 w-28 rounded skeleton-shimmer bg-white/15 mb-4"></div>
+                            <div className="h-4 w-full rounded skeleton-shimmer bg-white/10"></div>
+                            <div className="h-4 w-11/12 rounded skeleton-shimmer bg-white/10"></div>
+                            <div className="h-4 w-4/5 rounded skeleton-shimmer bg-white/10"></div>
+                        </div>
+
+                        {/* Cast Row Skeleton */}
+                        <div className="bg-[#1a1a2e]/60 p-6 rounded-2xl border border-white/5 space-y-4">
+                            <div className="h-5 w-20 rounded skeleton-shimmer bg-white/15"></div>
+                            <div className="flex gap-4 overflow-hidden">
+                                {[1, 2, 3, 4, 5, 6].map(i => (
+                                    <div key={i} className="flex-shrink-0 flex flex-col items-center gap-2">
+                                        <div className="w-20 h-20 md:w-24 md:h-24 rounded-full skeleton-shimmer bg-white/10 border border-white/10"></div>
+                                        <div className="h-3 w-16 rounded skeleton-shimmer bg-white/10"></div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Episodes Grid Skeleton */}
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <div className="h-6 w-32 rounded skeleton-shimmer bg-white/15"></div>
+                                <div className="h-8 w-44 rounded-full skeleton-shimmer bg-white/10"></div>
+                            </div>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                                {[1, 2, 3, 4, 5, 6, 7, 8].map(ep => (
+                                    <div key={ep} className="bg-[#1a1a2e]/60 border border-white/10 p-4 rounded-xl space-y-2">
+                                        <div className="h-3 w-14 rounded skeleton-shimmer bg-white/10"></div>
+                                        <div className="h-6 w-8 rounded skeleton-shimmer bg-white/15"></div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                        {[1,2,3,4,5,6,7,8].map(i => (
-                            <div key={i} className="aspect-[2/3] bg-white/5 rounded-xl animate-pulse"></div>
-                        ))}
+
+                    {/* Right Column: "You Might Also Like" Recommendation Grid Skeleton */}
+                    <div className="lg:col-span-1">
+                        <div className="h-6 w-44 rounded skeleton-shimmer bg-white/15 mb-4"></div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                            {[1, 2, 3, 4, 5, 6].map(i => (
+                                <div key={i} className="rounded-xl overflow-hidden bg-white/5 border border-white/5 flex flex-col">
+                                    <div className="aspect-[2/3] skeleton-shimmer bg-white/10"></div>
+                                    <div className="p-2.5 space-y-1.5">
+                                        <div className="h-3.5 w-5/6 rounded skeleton-shimmer bg-white/15"></div>
+                                        <div className="h-2.5 w-1/2 rounded skeleton-shimmer bg-white/10"></div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -680,23 +739,40 @@ const DetailsView: React.FC<{ movie: MovieResult, onBack: () => void,
                     <div className="flex justify-between items-center mb-4">
                         <h3 className="text-xl font-bold text-white flex items-center gap-2"><HeartIcon className="w-5 h-5 text-primary" /> You Might Also Like</h3>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                        {currentRecs.map((rec, i) => (
-                            <div key={`${recPage}-${i}`} className="animate-fade-in">
-                                <MovieCard movie={rec} onClick={onMovieClick} />
+                    {currentRecs.length > 0 ? (
+                        <>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                                {currentRecs.map((rec, i) => (
+                                    <div key={`${recPage}-${i}`} className="animate-fade-in">
+                                        <MovieCard movie={rec} onClick={onMovieClick} />
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-                    {currentRecs.length === 0 && <p className="text-gray-500 text-sm">No recommendations found.</p>}
-                    {maxRecPages > 1 && (
-                        <div className="mt-4 flex justify-center">
-                            <button 
-                                onClick={() => setRecPage((prev) => (prev + 1) % maxRecPages)}
-                                className="px-6 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-sm font-bold text-white transition-all flex items-center gap-2"
-                            >
-                                See More <i className="fa-solid fa-chevron-right text-[10px]"></i>
-                            </button>
+                            {maxRecPages > 1 && (
+                                <div className="mt-4 flex justify-center">
+                                    <button 
+                                        onClick={() => setRecPage((prev) => (prev + 1) % maxRecPages)}
+                                        className="px-6 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-sm font-bold text-white transition-all flex items-center gap-2"
+                                    >
+                                        See More <i className="fa-solid fa-chevron-right text-[10px]"></i>
+                                    </button>
+                                </div>
+                            )}
+                        </>
+                    ) : loading ? (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                            {[1, 2, 3, 4, 5, 6].map(i => (
+                                <div key={i} className="rounded-xl overflow-hidden bg-white/5 border border-white/5 flex flex-col">
+                                    <div className="aspect-[2/3] skeleton-shimmer bg-white/10"></div>
+                                    <div className="p-2.5 space-y-1.5">
+                                        <div className="h-3.5 w-5/6 rounded skeleton-shimmer bg-white/15"></div>
+                                        <div className="h-2.5 w-1/2 rounded skeleton-shimmer bg-white/10"></div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
+                    ) : (
+                        <p className="text-gray-500 text-sm">No recommendations found.</p>
                     )}
                 </div>
             </div>
@@ -1492,13 +1568,24 @@ const App: React.FC = () => {
                         )}
                         {currentView === 'watch-party' && <WatchPartyView onBack={() => { setCurrentView('home'); window.history.pushState({}, '', '/'); resetToHomeSEO(); }} />}
                         {currentView === 'staff' && selectedStaff && <StaffView staffId={selectedStaff.id} staffName={selectedStaff.name} staffAvatar={selectedStaff.avatar} onBack={handleBack} onMovieClick={handleMovieClick} />}
-                        {currentView === 'details' && selectedMovie && <DetailsView movie={selectedMovie} onBack={handleBack} onFetchSources={handleFetchSources} onPlayTrailer={handlePlayTrailer} onMovieClick={handleMovieClick} onDubClick={(d) => handleMovieClick({ title: "...", cover: "", thumbnail: "", type: selectedMovie.type, subjectId: d.subjectId, detailPath: d.detailPath })} onStaffClick={handleStaffClick} loading={loadingDetails} />}
+                        {currentView === 'details' && (selectedMovie || loadingDetails) && (
+                            <DetailsView 
+                                movie={selectedMovie || { title: "Loading...", cover: "", thumbnail: "", type: "Movie", subjectId: "" }} 
+                                onBack={handleBack} 
+                                onFetchSources={handleFetchSources} 
+                                onPlayTrailer={handlePlayTrailer} 
+                                onMovieClick={handleMovieClick} 
+                                onDubClick={(d) => handleMovieClick({ title: "...", cover: "", thumbnail: "", type: selectedMovie?.type || 'Movie', subjectId: d.subjectId, detailPath: d.detailPath })} 
+                                onStaffClick={handleStaffClick} 
+                                loading={loadingDetails} 
+                            />
+                        )}
                     </Suspense>
                 </main>
                 <Footer />
-                <div className="fixed bottom-4 left-0 w-full flex justify-center z-50 pointer-events-none px-4">
+                <div className="fixed bottom-2 left-0 w-full flex justify-center z-50 pointer-events-none px-2">
                     <div className="pointer-events-auto">
-                        <Dock magnification={60} distance={100} panelHeight={60} className="bg-[#141414]/95 border-white/10 shadow-2xl">
+                        <Dock magnification={50} distance={80} panelHeight={52} className="bg-[#121212]/95 border-white/15 shadow-[0_10px_35px_rgba(0,0,0,0.85)]">
                             <DockItem onClick={() => { setCurrentView("home"); window.history.pushState({}, "", "/"); resetToHomeSEO(); }}>
                                 <DockLabel>Home</DockLabel>
                                 <DockIcon><i className={`fa-solid fa-house text-xl ${currentView === "home" ? "text-primary drop-shadow-[0_0_8px_rgba(0,229,255,0.8)]" : "text-gray-400"}`}></i></DockIcon>
