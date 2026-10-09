@@ -1,14 +1,24 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type UserConfig, type PluginOption } from 'vite';
 import react from '@vitejs/plugin-react';
-import { VitePWA } from 'vite-plugin-pwa';
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(async ({ mode, command }): Promise<UserConfig> => {
   const isProduction = mode === 'production';
+  const isBuild = command === 'build';
+  
+  let pwaPlugin: any = null;
+  if (isBuild) {
+    try {
+      const { VitePWA } = await import('vite-plugin-pwa');
+      pwaPlugin = VitePWA;
+    } catch (e: any) {
+      console.warn('[Vite] Could not load VitePWA plugin:', e?.message || e);
+    }
+  }
   
   return {
     plugins: [
-      react(),
-      VitePWA({
+      react() as PluginOption,
+      ...(pwaPlugin ? [pwaPlugin({
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icons/*', 'manifest.webmanifest'],
         manifest: {
@@ -98,7 +108,7 @@ export default defineConfig(({ mode }) => {
           enabled: true,
           type: 'module'
         }
-      })
+      })] : [])
     ],
     build: {
       outDir: 'dist',
@@ -112,7 +122,7 @@ export default defineConfig(({ mode }) => {
       chunkSizeWarningLimit: 1200,
       rollupOptions: {
         output: {
-          manualChunks(id) {
+          manualChunks(id: string) {
             if (id.includes('node_modules')) {
               if (
                 id.includes('react') ||
@@ -162,13 +172,13 @@ export default defineConfig(({ mode }) => {
         '/api-omegatech': {
           target: 'https://api.omegatech.app',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api-omegatech/, ''),
+          rewrite: (path: string) => path.replace(/^\/api-omegatech/, ''),
           timeout: 15000
         },
         '/api-metadata': {
           target: 'https://h5-api.aoneroom.com/wefeed-h5api-bff',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api-metadata/, ''),
+          rewrite: (path: string) => path.replace(/^\/api-metadata/, ''),
           headers: {
             'Origin': 'https://moviebox.ph',
             'Referer': 'https://moviebox.ph/'
@@ -178,7 +188,7 @@ export default defineConfig(({ mode }) => {
         '/api-player': {
           target: 'https://123movienow.cc/wefeed-h5api-bff',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api-player/, ''),
+          rewrite: (path: string) => path.replace(/^\/api-player/, ''),
           headers: {
             'Origin': 'https://123movienow.cc',
             'Referer': 'https://123movienow.cc/'
@@ -188,7 +198,7 @@ export default defineConfig(({ mode }) => {
         '/api-cineverse': {
           target: 'https://cineverse.name.ng',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api-cineverse/, ''),
+          rewrite: (path: string) => path.replace(/^\/api-cineverse/, ''),
           headers: {
             'Origin': 'https://cineverse.name.ng',
             'Referer': 'https://cineverse.name.ng/'
@@ -198,7 +208,7 @@ export default defineConfig(({ mode }) => {
         '/api-stream': {
           target: 'https://movieapi.giftedtech.co.ke',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api-stream/, ''),
+          rewrite: (path: string) => path.replace(/^\/api-stream/, ''),
           headers: {
             'Origin': 'https://movieapi.giftedtech.co.ke',
             'Referer': 'https://movieapi.giftedtech.co.ke/'
@@ -215,13 +225,13 @@ export default defineConfig(({ mode }) => {
         '/api-omegatech': {
           target: 'https://api.omegatech.app',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api-omegatech/, ''),
+          rewrite: (path: string) => path.replace(/^\/api-omegatech/, ''),
           timeout: 15000
         },
         '/api-metadata': {
           target: 'https://h5-api.aoneroom.com/wefeed-h5api-bff',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api-metadata/, ''),
+          rewrite: (path: string) => path.replace(/^\/api-metadata/, ''),
           headers: {
             'Origin': 'https://moviebox.ph',
             'Referer': 'https://moviebox.ph/'
@@ -231,7 +241,7 @@ export default defineConfig(({ mode }) => {
         '/api-player': {
           target: 'https://123movienow.cc/wefeed-h5api-bff',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api-player/, ''),
+          rewrite: (path: string) => path.replace(/^\/api-player/, ''),
           headers: {
             'Origin': 'https://123movienow.cc',
             'Referer': 'https://123movienow.cc/'
@@ -241,7 +251,7 @@ export default defineConfig(({ mode }) => {
         '/api-cineverse': {
           target: 'https://cineverse.name.ng',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api-cineverse/, ''),
+          rewrite: (path: string) => path.replace(/^\/api-cineverse/, ''),
           headers: {
             'Origin': 'https://cineverse.name.ng',
             'Referer': 'https://cineverse.name.ng/'
@@ -251,7 +261,7 @@ export default defineConfig(({ mode }) => {
         '/api-stream': {
           target: 'https://movieapi.giftedtech.co.ke',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api-stream/, ''),
+          rewrite: (path: string) => path.replace(/^\/api-stream/, ''),
           headers: {
             'Origin': 'https://movieapi.giftedtech.co.ke',
             'Referer': 'https://movieapi.giftedtech.co.ke/'

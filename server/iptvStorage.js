@@ -35,9 +35,16 @@ function fetchJson(url) {
       if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
         return resolve(fetchJson(res.headers.location));
       }
+      if (res.statusCode !== 200) {
+        return reject(new Error(`HTTP status ${res.statusCode} for ${url}`));
+      }
       let body = '';
       res.on('data', chunk => body += chunk);
       res.on('end', () => {
+        const trimmed = body.trim();
+        if (trimmed.startsWith('<') || trimmed.toLowerCase().includes('error code') || trimmed.toLowerCase().includes('502')) {
+          return reject(new Error(`Non-JSON/Error response from ${url}: ${trimmed.substring(0, 40)}`));
+        }
         try {
           const parsed = JSON.parse(body);
           resolve(parsed);

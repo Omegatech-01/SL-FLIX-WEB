@@ -2,7 +2,11 @@ import React, { useState, useEffect, useRef, useCallback, Suspense, Component, E
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { ApiService, RANKING_CATEGORIES } from './services/api';
-import { updateMetaTags, resetToHomeSEO } from './services/seo';
+import { 
+  updateMetaTags, resetToHomeSEO, updateSearchSEO, updateToplistSEO, 
+  updateTrendingSEO, updateLiveTvSEO, updateAnimeSEO, updateNewsSEO, 
+  updateWatchPartySEO, updateNovelSEO 
+} from './services/seo';
 import { CategoryData, MovieResult, VideoSource, Subtitle, ImdbSuggestion, MovieDub } from './types';
 import Loader from './components/Loader';
 import MovieCard from './components/MovieCard';
@@ -963,7 +967,7 @@ const App: React.FC = () => {
         hasNavigatedRef.current = true;
         setCurrentView('novels');
         window.history.pushState({}, '', '/novels');
-        resetToHomeSEO();
+        updateNovelSEO({ novelId: 'hub', title: 'SLFLIX Novel Hub', summary: 'Read Romance, Fantasy & Mystery Web Novels on SL-FLIX' });
     };
 
     const handleWatchPartyClick = (roomId?: string) => {
@@ -974,7 +978,7 @@ const App: React.FC = () => {
         } else {
             window.history.pushState({}, '', '/watch-party');
         }
-        resetToHomeSEO();
+        updateWatchPartySEO();
     };
     const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
     const [recentlyViewed, setRecentlyViewed] = useState<MovieResult[]>(() => {
@@ -1170,7 +1174,7 @@ const App: React.FC = () => {
         if (category) setToplistCategory(category);
         setCurrentView('toplist');
         window.history.pushState({}, '', '/toplist');
-        resetToHomeSEO();
+        updateToplistSEO(category || 'Top Movies & Series');
     };
     useEffect(() => {
         const handlePopState = async () => {
@@ -1324,9 +1328,9 @@ const App: React.FC = () => {
         } catch (e) { console.error('[App] Source error:', e); showToast("Error loading sources", "error"); }
         finally { setLoadingSources(false); }
     };
-    const handleTrendingClick = () => { hasNavigatedRef.current = true; setCurrentView('trending'); window.history.pushState({}, '', '/trending'); resetToHomeSEO(); if (trendingMovies.length === 0) loadTrending(0); };
-    const handleLiveTvClick = () => { hasNavigatedRef.current = true; setCurrentView('live-tv'); window.history.pushState({}, '', '/live-tv'); resetToHomeSEO(); };
-    const handleAnimeClick = () => { hasNavigatedRef.current = true; setCurrentView('anime'); window.history.pushState({}, '', '/anime'); resetToHomeSEO(); };
+    const handleTrendingClick = () => { hasNavigatedRef.current = true; setCurrentView('trending'); window.history.pushState({}, '', '/trending'); updateTrendingSEO(); if (trendingMovies.length === 0) loadTrending(0); };
+    const handleLiveTvClick = () => { hasNavigatedRef.current = true; setCurrentView('live-tv'); window.history.pushState({}, '', '/live-tv'); updateLiveTvSEO(); };
+    const handleAnimeClick = () => { hasNavigatedRef.current = true; setCurrentView('anime'); window.history.pushState({}, '', '/anime'); updateAnimeSEO(); };
     const handlePlayLiveChannel = (channel: any, channelList?: any[]) => {
         if (!channel) return;
         const rawUrl = channel.stream_url || channel.url || channel.streamUrl;
@@ -1475,11 +1479,11 @@ const App: React.FC = () => {
                         onHome={() => { setCurrentView('home'); window.history.pushState({}, '', '/'); resetToHomeSEO(); }} 
                         onToplist={() => handleToplistClick()} 
                         onLiveTv={handleLiveTvClick}
-                        onNews={() => { hasNavigatedRef.current = true; setCurrentView('news'); window.history.pushState({}, '', '/news'); resetToHomeSEO(); }}
+                        onNews={() => { hasNavigatedRef.current = true; setCurrentView('news'); window.history.pushState({}, '', '/news'); updateNewsSEO(); }}
                         onAnime={handleAnimeClick}
                         onNovels={handleNovelsClick}
                         onWatchParty={() => handleWatchPartyClick()}
-                        onAdult={() => { hasNavigatedRef.current = true; setCurrentView('adult'); window.history.pushState({}, '', '/adult'); resetToHomeSEO(); }}
+                        onAdult={() => { hasNavigatedRef.current = true; setCurrentView('adult'); window.history.pushState({}, '', '/adult'); updateSearchSEO('+18 Hot'); }}
                         isSearchOpen={isSearchOpen} 
                         setIsSearchOpen={setIsSearchOpen} 
                         trendingKeywords={trendingKeywords} 

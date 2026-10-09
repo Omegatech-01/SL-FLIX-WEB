@@ -300,7 +300,7 @@ export function buildOgSvg(options = {}) {
 
     <!-- Poster Rectangular Clip -->
     <clipPath id="rectPosterClip">
-      <rect x="70" y="55" width="340" height="520" rx="22" />
+      <rect x="60" y="50" width="360" height="530" rx="24" />
     </clipPath>
 
     <!-- Staff Circular Avatar Clip -->
@@ -309,8 +309,8 @@ export function buildOgSvg(options = {}) {
     </clipPath>
 
     <!-- Subtle Tech Grid -->
-    <pattern id="gridPattern" width="60" height="60" patternUnits="userSpaceOnUse">
-      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" stroke-width="0.5" stroke-opacity="0.035" />
+    <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5" stroke-opacity="0.04" />
     </pattern>
   </defs>
 
@@ -319,9 +319,9 @@ export function buildOgSvg(options = {}) {
   <rect width="1200" height="630" fill="url(#gridPattern)" />
 
   <!-- Themed Ambient Glow Orbs -->
-  <circle cx="1120" cy="110" r="280" fill="${theme.primary}" fill-opacity="0.10" filter="url(#glowBlur)" />
-  <circle cx="200" cy="550" r="260" fill="${theme.secondary}" fill-opacity="0.08" filter="url(#glowBlur)" />
-  <circle cx="700" cy="320" r="220" fill="${theme.accent}" fill-opacity="0.04" filter="url(#glowBlur)" />
+  <circle cx="1100" cy="100" r="300" fill="${theme.primary}" fill-opacity="0.12" filter="url(#glowBlur)" />
+  <circle cx="180" cy="530" r="280" fill="${theme.secondary}" fill-opacity="0.10" filter="url(#glowBlur)" />
+  <circle cx="650" cy="315" r="240" fill="${theme.accent}" fill-opacity="0.06" filter="url(#glowBlur)" />
 
   <!-- LEFT COLUMN: Poster / Portrait Card -->
   <g filter="url(#cardShadow)">
@@ -340,47 +340,52 @@ export function buildOgSvg(options = {}) {
       </g>
     ` : `
       <!-- Standard Poster Frame for Movie / TV / Live -->
-      <rect x="70" y="55" width="340" height="520" rx="22" fill="#121320" stroke="white" stroke-opacity="0.15" stroke-width="1.5" />
-      ${posterUri ? `<image href="${posterUri}" x="70" y="55" width="340" height="520" preserveAspectRatio="xMidYMid slice" clip-path="url(#rectPosterClip)" />` : `
+      <rect x="60" y="50" width="360" height="530" rx="24" fill="#0e101f" stroke="${theme.primary}" stroke-opacity="0.3" stroke-width="2" />
+      ${posterUri ? `<image href="${posterUri}" x="60" y="50" width="360" height="530" preserveAspectRatio="xMidYMid slice" clip-path="url(#rectPosterClip)" />` : `
         <!-- Fallback Poster Artwork when no image -->
-        <rect x="70" y="55" width="340" height="520" rx="22" fill="#111322" />
+        <rect x="60" y="50" width="360" height="530" rx="24" fill="#0e101f" />
         <circle cx="240" cy="280" r="70" fill="url(#primaryGrad)" fill-opacity="0.2" />
         <polygon points="225,250 270,280 225,310" fill="${theme.primary}" />
         <text x="240" y="390" font-family="Liberation Sans, sans-serif" font-size="22" font-weight="bold" fill="#ffffff" text-anchor="middle">SLFLIX PRO</text>
         <text x="240" y="420" font-family="Liberation Sans, sans-serif" font-size="14" fill="#64748b" text-anchor="middle">ULTRA HD STREAMING</text>
       `}
       <!-- Top Quality Badge on Poster -->
-      <g transform="translate(86, 72)">
-        <rect width="112" height="32" rx="8" fill="#000000" fill-opacity="0.78" stroke="${theme.primary}" stroke-width="1" stroke-opacity="0.7" />
-        <text x="56" y="21" font-family="Liberation Sans, sans-serif" font-size="12" font-weight="bold" fill="${theme.primary}" text-anchor="middle" letter-spacing="1">${qualityText}</text>
+      <g transform="translate(76, 68)">
+        <rect width="120" height="34" rx="10" fill="#000000" fill-opacity="0.82" stroke="${theme.primary}" stroke-width="1.2" stroke-opacity="0.8" />
+        <text x="60" y="22" font-family="Liberation Sans, sans-serif" font-size="13" font-weight="bold" fill="${theme.primary}" text-anchor="middle" letter-spacing="1.2">${qualityText}</text>
+      </g>
+      <!-- Bottom Live / Status Badge on Poster -->
+      <g transform="translate(76, 530)">
+        <rect width="140" height="34" rx="10" fill="${theme.primary}" fill-opacity="0.9" />
+        <text x="70" y="22" font-family="Liberation Sans, sans-serif" font-size="13" font-weight="bold" fill="#000000" text-anchor="middle" letter-spacing="1">▶ 4K STREAM</text>
       </g>
     `}
   </g>
 
   <!-- RIGHT COLUMN: Rich Media Content -->
-  <g transform="translate(460, 55)">
+  <g transform="translate(450, 48)">
     <!-- Top Header Bar: Category Tag & Platform Logo -->
     <g transform="translate(0, 0)">
       <!-- Tagline Pill -->
-      <rect x="0" y="0" width="280" height="34" rx="17" fill="${theme.primary}" fill-opacity="0.14" stroke="${theme.primary}" stroke-opacity="0.4" stroke-width="1" />
-      <text x="18" y="22" font-family="Liberation Sans, sans-serif" font-size="13" font-weight="bold" fill="${theme.primary}" letter-spacing="2.2">${escapeXml(theme.tagline)}</text>
+      <rect x="0" y="0" width="290" height="36" rx="18" fill="${theme.primary}" fill-opacity="0.15" stroke="${theme.primary}" stroke-opacity="0.5" stroke-width="1.2" />
+      <text x="18" y="23" font-family="Liberation Sans, sans-serif" font-size="13" font-weight="bold" fill="${theme.primary}" letter-spacing="2.2">${escapeXml(theme.tagline)}</text>
 
-      <!-- Top Right Watermark Brand Badge (Pure Vector - Zero Base64 overhead) -->
-      <g transform="translate(540, -5)">
-        <rect width="130" height="42" rx="12" fill="#0b0d1e" stroke="white" stroke-opacity="0.14" stroke-width="1" />
+      <!-- Top Right Watermark Brand Badge -->
+      <g transform="translate(520, -2)">
+        <rect width="130" height="42" rx="12" fill="#0d1021" stroke="${theme.primary}" stroke-opacity="0.3" stroke-width="1.5" />
         <!-- Sleek Play Logo Mark -->
         <rect x="10" y="9" width="24" height="24" rx="6" fill="url(#primaryGrad)" />
         <polygon points="19,16 27,21 19,26" fill="#000000" />
         <text x="42" y="26" font-family="Liberation Sans, sans-serif" font-size="14" font-weight="bold" fill="#ffffff" letter-spacing="1">SLFLIX</text>
-        <rect x="96" y="14" width="26" height="15" rx="4" fill="${theme.primary}" fill-opacity="0.2" />
+        <rect x="96" y="14" width="26" height="15" rx="4" fill="${theme.primary}" fill-opacity="0.25" />
         <text x="109" y="25" font-family="Liberation Sans, sans-serif" font-size="9" font-weight="bold" fill="${theme.primary}" text-anchor="middle">PRO</text>
       </g>
     </g>
 
-    <!-- Main Title (Robust Multi-Line rendering with accurate baseline coordinates) -->
-    <g transform="translate(0, ${titleStartY})">
+    <!-- Main Title -->
+    <g transform="translate(0, 52)">
       ${titleLines.map((line, idx) => `
-        <text x="0" y="${(idx + 1) * (titleFontSize + 2) - 4}" font-family="Liberation Sans, sans-serif" font-size="${titleFontSize}" font-weight="bold" fill="#ffffff">${line}</text>
+        <text x="0" y="${(idx + 1) * (titleFontSize + 4) - 4}" font-family="Liberation Sans, sans-serif" font-size="${titleFontSize}" font-weight="bold" fill="#ffffff">${line}</text>
       `).join('')}
     </g>
 
@@ -388,55 +393,55 @@ export function buildOgSvg(options = {}) {
     <g transform="translate(0, ${badgesY})">
       <!-- IMDb Rating Badge with Bold Star -->
       <g>
-        <rect x="0" y="0" width="106" height="42" rx="10" fill="${theme.primary}" />
-        <text x="53" y="28" font-family="Liberation Sans, sans-serif" font-size="20" font-weight="bold" fill="#000000" text-anchor="middle">★ ${ratingText}</text>
+        <rect x="0" y="0" width="112" height="44" rx="12" fill="url(#primaryGrad)" />
+        <text x="56" y="28" font-family="Liberation Sans, sans-serif" font-size="18" font-weight="bold" fill="#000000" text-anchor="middle">★ ${ratingText}</text>
       </g>
 
       <!-- Year / Release Badge -->
-      <g transform="translate(118, 0)">
-        <rect width="90" height="42" rx="10" fill="white" fill-opacity="0.08" stroke="white" stroke-opacity="0.22" stroke-width="1" />
-        <text x="45" y="28" font-family="Liberation Sans, sans-serif" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">${yearText}</text>
+      <g transform="translate(124, 0)">
+        <rect width="95" height="44" rx="12" fill="#151932" stroke="white" stroke-opacity="0.25" stroke-width="1.2" />
+        <text x="47" y="28" font-family="Liberation Sans, sans-serif" font-size="17" font-weight="bold" fill="#ffffff" text-anchor="middle">${yearText}</text>
       </g>
 
       <!-- Content Type Badge -->
-      <g transform="translate(220, 0)">
-        <rect width="125" height="42" rx="10" fill="white" fill-opacity="0.08" stroke="white" stroke-opacity="0.22" stroke-width="1" />
-        <text x="62" y="28" font-family="Liberation Sans, sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">${typeLabel}</text>
+      <g transform="translate(231, 0)">
+        <rect width="130" height="44" rx="12" fill="#151932" stroke="white" stroke-opacity="0.25" stroke-width="1.2" />
+        <text x="65" y="28" font-family="Liberation Sans, sans-serif" font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">${typeLabel}</text>
       </g>
 
       <!-- Audio / Features Badge -->
-      <g transform="translate(357, 0)">
-        <rect width="125" height="42" rx="10" fill="${theme.secondary}" fill-opacity="0.14" stroke="${theme.secondary}" stroke-opacity="0.45" stroke-width="1" />
-        <text x="62" y="28" font-family="Liberation Sans, sans-serif" font-size="15" font-weight="bold" fill="${theme.secondary}" text-anchor="middle">${audioText}</text>
+      <g transform="translate(373, 0)">
+        <rect width="135" height="44" rx="12" fill="${theme.secondary}" fill-opacity="0.18" stroke="${theme.secondary}" stroke-opacity="0.6" stroke-width="1.2" />
+        <text x="67" y="28" font-family="Liberation Sans, sans-serif" font-size="14" font-weight="bold" fill="${theme.secondary}" text-anchor="middle">${audioText}</text>
       </g>
 
       <!-- Duration Badge -->
-      <g transform="translate(494, 0)">
-        <rect width="120" height="42" rx="10" fill="white" fill-opacity="0.06" stroke="white" stroke-opacity="0.16" stroke-width="1" />
-        <text x="60" y="28" font-family="Liberation Sans, sans-serif" font-size="15" font-weight="bold" fill="#cbd5e1" text-anchor="middle">${durationText}</text>
+      <g transform="translate(520, 0)">
+        <rect width="130" height="44" rx="12" fill="#151932" stroke="white" stroke-opacity="0.18" stroke-width="1.2" />
+        <text x="65" y="28" font-family="Liberation Sans, sans-serif" font-size="14" font-weight="bold" fill="#cbd5e1" text-anchor="middle">${durationText}</text>
       </g>
     </g>
 
     <!-- Genre Chips Row -->
     <g transform="translate(0, ${genresY})">
-      <text x="0" y="21" font-family="Liberation Sans, sans-serif" font-size="13" font-weight="bold" fill="#64748b" letter-spacing="1.5">CATEGORY</text>
-      <g transform="translate(90, 0)">
+      <text x="0" y="21" font-family="Liberation Sans, sans-serif" font-size="13" font-weight="bold" fill="#94a3b8" letter-spacing="1.5">GENRES</text>
+      <g transform="translate(85, 0)">
         ${genrePills.map((g, i) => `
-          <g transform="translate(${i * 120}, 0)">
-            <rect width="110" height="30" rx="8" fill="#1b1e33" stroke="white" stroke-opacity="0.12" stroke-width="1" />
-            <text x="55" y="20" font-family="Liberation Sans, sans-serif" font-size="13" font-weight="bold" fill="#e2e8f0" text-anchor="middle">${escapeXml(g)}</text>
+          <g transform="translate(${i * 125}, 0)">
+            <rect width="115" height="32" rx="10" fill="#161a30" stroke="${theme.primary}" stroke-opacity="0.3" stroke-width="1.2" />
+            <text x="57" y="21" font-family="Liberation Sans, sans-serif" font-size="13" font-weight="bold" fill="#f1f5f9" text-anchor="middle">${escapeXml(g)}</text>
           </g>
         `).join('')}
       </g>
     </g>
 
-    <!-- Synopsis / Plot Card Box (Fills card densely, no empty look!) -->
+    <!-- Synopsis / Plot Card Box -->
     <g transform="translate(0, ${synopsisBoxY})">
-      <rect width="670" height="${synopsisBoxHeight}" rx="16" fill="#111426" fill-opacity="0.88" stroke="white" stroke-opacity="0.09" stroke-width="1" />
-      <g transform="translate(22, 18)">
-        <text x="0" y="10" font-family="Liberation Sans, sans-serif" font-size="12" font-weight="bold" fill="${theme.primary}" letter-spacing="2">SYNOPSIS &amp; DETAILS</text>
+      <rect width="680" height="${synopsisBoxHeight}" rx="18" fill="#111428" fill-opacity="0.92" stroke="${theme.primary}" stroke-opacity="0.25" stroke-width="1.5" />
+      <g transform="translate(24, 20)">
+        <text x="0" y="10" font-family="Liberation Sans, sans-serif" font-size="12" font-weight="bold" fill="${theme.primary}" letter-spacing="2">SYNOPSIS &amp; PLOT</text>
         ${descLines.map((dLine, dIdx) => `
-          <text x="0" y="${38 + (dIdx * 28)}" font-family="Liberation Sans, sans-serif" font-size="18" fill="#94a3b8">${dLine}</text>
+          <text x="0" y="${40 + (dIdx * 30)}" font-family="Liberation Sans, sans-serif" font-size="17" fill="#cbd5e1" font-weight="normal">${dLine}</text>
         `).join('')}
       </g>
     </g>
@@ -444,20 +449,20 @@ export function buildOgSvg(options = {}) {
     <!-- Bottom CTA Button & Features Trust Bar -->
     <g transform="translate(0, ${ctaY})">
       <!-- Glowing CTA Button -->
-      <rect width="250" height="48" rx="14" fill="url(#btnGrad)" />
-      <text x="125" y="31" font-family="Liberation Sans, sans-serif" font-size="15" font-weight="bold" fill="#000000" text-anchor="middle" letter-spacing="1">${escapeXml(theme.ctaText)}</text>
+      <rect width="260" height="50" rx="16" fill="url(#btnGrad)" />
+      <text x="130" y="32" font-family="Liberation Sans, sans-serif" font-size="15" font-weight="bold" fill="#000000" text-anchor="middle" letter-spacing="1.2">${escapeXml(theme.ctaText)}</text>
 
       <!-- Trust Badges -->
-      <g transform="translate(270, 29)">
-        <text font-family="Liberation Sans, sans-serif" font-size="14" font-weight="bold" fill="#64748b">
-          FREE STREAMING <tspan fill="${theme.primary}">•</tspan> NO SIGN-UP <tspan fill="${theme.primary}">•</tspan> 4K HDR
+      <g transform="translate(280, 30)">
+        <text font-family="Liberation Sans, sans-serif" font-size="14" font-weight="bold" fill="#94a3b8">
+          NO REGISTRATION <tspan fill="${theme.primary}">•</tspan> FAST SERVERS <tspan fill="${theme.primary}">•</tspan> 4K HDR
         </text>
       </g>
     </g>
   </g>
 
   <!-- Bottom Slim Accent Border -->
-  <rect x="0" y="626" width="1200" height="4" fill="url(#primaryGrad)" />
+  <rect x="0" y="624" width="1200" height="6" fill="url(#primaryGrad)" />
 </svg>`;
 }
 

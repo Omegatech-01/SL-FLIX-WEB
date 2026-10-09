@@ -1086,12 +1086,17 @@ app.use(async (req, res, next) => {
     if (req.path.startsWith('/api') || req.path.startsWith('/socket.io') || req.path.includes('.')) {
         return next();
     }
-    const isSeoRoute = req.path.startsWith('/movie/') || 
-                       req.path.startsWith('/tv/') || 
-                       req.path.startsWith('/series/') || 
-                       req.path.startsWith('/staff/') || 
+    const isSeoRoute = req.path.startsWith('/movie') || 
+                       req.path.startsWith('/tv') || 
+                       req.path.startsWith('/series') || 
+                       req.path.startsWith('/staff') || 
                        req.path.startsWith('/live') || 
                        req.path.startsWith('/anime') || 
+                       req.path.startsWith('/novel') || 
+                       req.path.startsWith('/search') || 
+                       req.path.startsWith('/trending') || 
+                       req.path.startsWith('/toplist') || 
+                       req.path.startsWith('/watch-party') || 
                        req.path === '/';
     if (process.env.NODE_ENV === 'production' || isSeoRoute) {
         await getDynamicHtml(req, res);
@@ -1102,6 +1107,8 @@ app.use(async (req, res, next) => {
 if (process.env.NODE_ENV !== 'production') {
     const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
+        root: path.resolve(__dirname),
+        configFile: path.resolve(__dirname, 'vite.config.ts'),
         server: { 
             middlewareMode: true,
             hmr: process.env.DISABLE_HMR === 'true' ? false : {
@@ -1168,6 +1175,10 @@ async function getDynamicHtml(req, res) {
     const isLive = section === 'live' || section === 'live-tv';
     const isAnime = section === 'anime';
     const isNovel = section === 'novel' || section === 'novels';
+    const isSearch = section === 'search';
+    const isTrending = section === 'trending';
+    const isToplist = section === 'toplist';
+    const isWatchParty = section === 'watch-party';
     const isHome = pathParts.length === 0;
 
     let htmlPath = process.env.NODE_ENV === 'production' 
@@ -1183,42 +1194,41 @@ async function getDynamicHtml(req, res) {
     try {
         if ((isMovie || isTv) && subjectId && subjectId.length > 2) {
             const movie = await fetchSubjectDetails(subjectId);
-            if (movie) {
-                const isTvSeries = isTv || movie.subjectType === 2 || movie.type === 'TV Series' || movie.category === 'Series';
-                const rawTitle = isTvSeries 
-                    ? `${movie.title || movie.name} | Stream TV Series Online Free - SLFLIX`
-                    : `${movie.title || movie.name} | Watch Online Free - SLFLIX`;
-                const movieOwnDesc = (movie.synopsis || movie.description || movie.introduction || movie.summary || movie.desc || movie.content || movie.postTitle || '').trim();
-                const rawDescription = movieOwnDesc || `Watch ${movie.title || movie.name} online free in HD. ${movie.genre || movie.category || 'Stream now on SLFLIX'}.`;
-                const title = rawTitle.replace(/"/g, '&quot;');
-                const description = rawDescription.replace(/"/g, '&quot;').replace(/[\r\n]+/g, ' ');
-                const image = `${hostUrl}/api/og/${isTvSeries ? 'tv' : 'movie'}/${subjectId}.png`;
-                const movieCoverUrl = movie.cover?.url || (typeof movie.cover === 'string' ? movie.cover : '') || movie.thumbnail || movie.poster?.url || movie.image?.url || `${hostUrl}/icons/slflix.png`;
+            const isTvSeries = isTv || movie?.subjectType === 2 || movie?.type === 'TV Series' || movie?.category === 'Series';
+            const movieTitle = movie?.title || movie?.name || req.query.title || (isTvSeries ? 'Featured TV Series' : 'Featured Movie');
+            const rawTitle = isTvSeries 
+                ? `${movieTitle} | Stream TV Series Online Free - SLFLIX`
+                : `${movieTitle} | Watch Online Free - SLFLIX`;
+            const movieOwnDesc = (movie?.synopsis || movie?.description || movie?.introduction || movie?.summary || movie?.desc || movie?.content || movie?.postTitle || req.query.desc || req.query.synopsis || '').trim();
+            const rawDescription = movieOwnDesc || `Watch ${movieTitle} online free in HD. ${movie?.genre || movie?.category || 'Stream now on SLFLIX with zero ads'}.`;
+            const title = rawTitle.replace(/"/g, '&quot;');
+            const description = rawDescription.replace(/"/g, '&quot;').replace(/[\r\n]+/g, ' ');
+            const image = `${hostUrl}/api/og/${isTvSeries ? 'tv' : 'movie'}/${subjectId}.png`;
+            const movieCoverUrl = movie?.cover?.url || (typeof movie?.cover === 'string' ? movie?.cover : '') || movie?.thumbnail || movie?.poster?.url || movie?.image?.url || `${hostUrl}/icons/slflix.png`;
 
-                // Cache staff members for future staff page requests
-                if (movie.staffList || movie.staffs || movie.actors) {
-                    const list = movie.staffList || movie.staffs || movie.actors || [];
-                    list.forEach(s => {
-                        const sId = String(s.staffId || s.id || '');
-                        if (sId) {
-                            staffMap.set(sId, {
-                                name: s.name || s.enName || '',
-                                avatar: s.avatar?.url || s.avatar || s.photo || '',
-                                role: s.role || 'Actor'
-                            });
-                        }
-                    });
-                }
-
-                html = injectSeoTags(html, {
-                    title,
-                    description,
-                    image,
-                    icon: movieCoverUrl,
-                    url: fullUrl,
-                    type: isTvSeries ? 'video.tv_show' : 'video.movie'
+            // Cache staff members for future staff page requests
+            if (movie && (movie.staffList || movie.staffs || movie.actors)) {
+                const list = movie.staffList || movie.staffs || movie.actors || [];
+                list.forEach(s => {
+                    const sId = String(s.staffId || s.id || '');
+                    if (sId) {
+                        staffMap.set(sId, {
+                            name: s.name || s.enName || '',
+                            avatar: s.avatar?.url || s.avatar || s.photo || '',
+                            role: s.role || 'Actor'
+                        });
+                    }
                 });
             }
+
+            html = injectSeoTags(html, {
+                title,
+                description,
+                image,
+                icon: movieCoverUrl,
+                url: fullUrl,
+                type: isTvSeries ? 'video.tv_show' : 'video.movie'
+            });
         } else if (isStaff && subjectId) {
             let staffInfo = staffMap.get(subjectId);
             if (!staffInfo) {
@@ -1311,6 +1321,59 @@ async function getDynamicHtml(req, res) {
                 icon: novelCover,
                 url: fullUrl,
                 type: 'book'
+            });
+        } else if (isSearch) {
+            const q = (req.query.q || req.query.query || '').trim();
+            const title = q ? `Search Results for "${q}" | SLFLIX` : 'Search Movies & TV Series | SLFLIX';
+            const description = q ? `Browse top movies, TV series, and anime matches for "${q}" on SLFLIX.` : 'Search and stream thousands of free HD movies, anime, and TV series online with zero ads on SLFLIX.';
+            const image = `${hostUrl}/api/og/home.png`;
+
+            html = injectSeoTags(html, {
+                title: title.replace(/"/g, '&quot;'),
+                description: description.replace(/"/g, '&quot;'),
+                image,
+                icon: `${hostUrl}/icons/slflix.png`,
+                url: fullUrl,
+                type: 'website'
+            });
+        } else if (isTrending) {
+            const title = 'Trending Movies & Series Right Now | SLFLIX';
+            const description = 'Discover the hottest trending movies, popular television series, and viral releases today on SLFLIX.';
+            const image = `${hostUrl}/api/og/home.png`;
+
+            html = injectSeoTags(html, {
+                title,
+                description,
+                image,
+                icon: `${hostUrl}/icons/slflix.png`,
+                url: fullUrl,
+                type: 'website'
+            });
+        } else if (isToplist) {
+            const title = 'Top Rated Movies & Shows of All Time | SLFLIX';
+            const description = 'Explore the highest-rated cinema classics, award winners, and critically acclaimed television series streaming free on SLFLIX.';
+            const image = `${hostUrl}/api/og/home.png`;
+
+            html = injectSeoTags(html, {
+                title,
+                description,
+                image,
+                icon: `${hostUrl}/icons/slflix.png`,
+                url: fullUrl,
+                type: 'website'
+            });
+        } else if (isWatchParty) {
+            const title = 'Watch Party Live | Synchronized Movie Streaming with Friends - SLFLIX';
+            const description = 'Join and host synchronized live movie watch parties with real-time chat, synchronized playback, and instant room sharing on SLFLIX.';
+            const image = `${hostUrl}/api/og/home.png`;
+
+            html = injectSeoTags(html, {
+                title,
+                description,
+                image,
+                icon: `${hostUrl}/icons/slflix.png`,
+                url: fullUrl,
+                type: 'website'
             });
         } else if (isHome) {
             const title = 'SLFLIX | Watch Free Movies, TV Series & Live Streams Online in 4K';

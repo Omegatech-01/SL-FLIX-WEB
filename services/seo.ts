@@ -292,6 +292,231 @@ export const updateNovelSEO = (novel: { novelId: string; title: string; author?:
     setMeta('twitter:image', image, true);
 };
 
+export const updateSearchSEO = (query: string) => {
+    if (typeof document === 'undefined') return;
+    const title = query ? `Search Results for "${query}" | SL-FLIX` : `Search Movies & TV Series | SL-FLIX`;
+    const description = query ? `Browse search results for "${query}" on SL-FLIX. Watch online free in HD.` : `Search over 10,000+ movies, series, anime, and live channels on SL-FLIX.`;
+    const hostUrl = `${window.location.protocol}//${window.location.host}`;
+    const url = window.location.href;
+    const image = `${hostUrl}/icons/slflix.png`;
+
+    document.title = title;
+    const setMeta = (property: string, content: string, isName: boolean = false) => {
+        let el: HTMLMetaElement | null = isName 
+            ? document.querySelector(`meta[name="${property}"]`) as HTMLMetaElement
+            : document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+        if (!el) {
+            el = document.createElement('meta');
+            if (!isName) el.setAttribute('property', property);
+            else el.setAttribute('name', property);
+            document.head.appendChild(el);
+        }
+        el.setAttribute('content', content);
+    };
+    setMeta('description', description, true);
+    setMeta('og:title', title);
+    setMeta('og:description', description);
+    setMeta('og:image', image);
+    setMeta('og:url', url);
+    setMeta('og:type', 'website');
+    setMeta('twitter:card', 'summary_large_image', true);
+    setMeta('twitter:title', title, true);
+    setMeta('twitter:description', description, true);
+    setMeta('twitter:image', image, true);
+};
+
+export const updateToplistSEO = (categoryName: string = 'Top Movies') => {
+    if (typeof document === 'undefined') return;
+    const title = `${categoryName} Leaderboard & Rankings | SL-FLIX`;
+    const description = `Explore top-rated movies, trending TV shows, and most popular anime rankings on SL-FLIX.`;
+    const hostUrl = `${window.location.protocol}//${window.location.host}`;
+    const url = window.location.href;
+    const image = `${hostUrl}/icons/slflix.png`;
+
+    document.title = title;
+    const setMeta = (property: string, content: string, isName: boolean = false) => {
+        let el: HTMLMetaElement | null = isName 
+            ? document.querySelector(`meta[name="${property}"]`) as HTMLMetaElement
+            : document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+        if (!el) {
+            el = document.createElement('meta');
+            if (!isName) el.setAttribute('property', property);
+            else el.setAttribute('name', property);
+            document.head.appendChild(el);
+        }
+        el.setAttribute('content', content);
+    };
+    setMeta('description', description, true);
+    setMeta('og:title', title);
+    setMeta('og:description', description);
+    setMeta('og:image', image);
+    setMeta('og:url', url);
+    setMeta('og:type', 'website');
+    setMeta('twitter:card', 'summary_large_image', true);
+    setMeta('twitter:title', title, true);
+    setMeta('twitter:description', description, true);
+};
+
+export const updateTrendingSEO = () => {
+    if (typeof document === 'undefined') return;
+    const title = `Trending Movies & Series This Week | SL-FLIX`;
+    const description = `Discover what everyone is watching right now. Stream trending blockbuster films and series in HD free on SL-FLIX.`;
+    const hostUrl = `${window.location.protocol}//${window.location.host}`;
+    const url = window.location.href;
+    const image = `${hostUrl}/icons/slflix.png`;
+
+    document.title = title;
+    const setMeta = (property: string, content: string, isName: boolean = false) => {
+        let el: HTMLMetaElement | null = isName 
+            ? document.querySelector(`meta[name="${property}"]`) as HTMLMetaElement
+            : document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+        if (!el) {
+            el = document.createElement('meta');
+            if (!isName) el.setAttribute('property', property);
+            else el.setAttribute('name', property);
+            document.head.appendChild(el);
+        }
+        el.setAttribute('content', content);
+    };
+    setMeta('description', description, true);
+    setMeta('og:title', title);
+    setMeta('og:description', description);
+    setMeta('og:image', image);
+    setMeta('og:url', url);
+    setMeta('og:type', 'website');
+    setMeta('twitter:card', 'summary_large_image', true);
+    setMeta('twitter:title', title, true);
+    setMeta('twitter:description', description, true);
+};
+
+export const updateLiveTvSEO = () => {
+    if (typeof document === 'undefined') return;
+    const title = `Live TV & Global Sports Channels Online Free | SL-FLIX`;
+    const description = `Stream over 1,500+ live television channels, news broadcasts, and global sports events in high definition free on SL-FLIX.`;
+    const hostUrl = `${window.location.protocol}//${window.location.host}`;
+    const url = window.location.href;
+    const image = `${hostUrl}/api/og/live.png`;
+
+    document.title = title;
+    const setMeta = (property: string, content: string, isName: boolean = false) => {
+        let el: HTMLMetaElement | null = isName 
+            ? document.querySelector(`meta[name="${property}"]`) as HTMLMetaElement
+            : document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+        if (!el) {
+            el = document.createElement('meta');
+            if (!isName) el.setAttribute('property', property);
+            else el.setAttribute('name', property);
+            document.head.appendChild(el);
+        }
+        el.setAttribute('content', content);
+    };
+    setMeta('description', description, true);
+    setMeta('og:title', title);
+    setMeta('og:description', description);
+    setMeta('og:image', image);
+    setMeta('og:url', url);
+    setMeta('og:type', 'video.other');
+    setMeta('twitter:card', 'summary_large_image', true);
+    setMeta('twitter:title', title, true);
+    setMeta('twitter:description', description, true);
+};
+
+export const updateAnimeSEO = () => {
+    if (typeof document === 'undefined') return;
+    const title = `Watch Anime Online Free in HD | Sub & Dub - SL-FLIX`;
+    const description = `Stream popular anime series, movies, and simulcasts with English sub and dub in 1080p HD on SL-FLIX Anime Hub.`;
+    const hostUrl = `${window.location.protocol}//${window.location.host}`;
+    const url = window.location.href;
+    const image = `${hostUrl}/api/og/anime.png`;
+
+    document.title = title;
+    const setMeta = (property: string, content: string, isName: boolean = false) => {
+        let el: HTMLMetaElement | null = isName 
+            ? document.querySelector(`meta[name="${property}"]`) as HTMLMetaElement
+            : document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+        if (!el) {
+            el = document.createElement('meta');
+            if (!isName) el.setAttribute('property', property);
+            else el.setAttribute('name', property);
+            document.head.appendChild(el);
+        }
+        el.setAttribute('content', content);
+    };
+    setMeta('description', description, true);
+    setMeta('og:title', title);
+    setMeta('og:description', description);
+    setMeta('og:image', image);
+    setMeta('og:url', url);
+    setMeta('og:type', 'video.tv_show');
+    setMeta('twitter:card', 'summary_large_image', true);
+    setMeta('twitter:title', title, true);
+    setMeta('twitter:description', description, true);
+};
+
+export const updateNewsSEO = () => {
+    if (typeof document === 'undefined') return;
+    const title = `Movie News, Entertainment & Live Scores | SL-FLIX`;
+    const description = `Stay updated with the latest movie releases, celebrity gossip, trailer drops, and live sports updates on SL-FLIX.`;
+    const hostUrl = `${window.location.protocol}//${window.location.host}`;
+    const url = window.location.href;
+    const image = `${hostUrl}/icons/slflix.png`;
+
+    document.title = title;
+    const setMeta = (property: string, content: string, isName: boolean = false) => {
+        let el: HTMLMetaElement | null = isName 
+            ? document.querySelector(`meta[name="${property}"]`) as HTMLMetaElement
+            : document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+        if (!el) {
+            el = document.createElement('meta');
+            if (!isName) el.setAttribute('property', property);
+            else el.setAttribute('name', property);
+            document.head.appendChild(el);
+        }
+        el.setAttribute('content', content);
+    };
+    setMeta('description', description, true);
+    setMeta('og:title', title);
+    setMeta('og:description', description);
+    setMeta('og:image', image);
+    setMeta('og:url', url);
+    setMeta('og:type', 'website');
+    setMeta('twitter:card', 'summary_large_image', true);
+    setMeta('twitter:title', title, true);
+    setMeta('twitter:description', description, true);
+};
+
+export const updateWatchPartySEO = () => {
+    if (typeof document === 'undefined') return;
+    const title = `Watch Party | Stream Movies Together with Friends - SL-FLIX`;
+    const description = `Create or join a synchronized watch party room to stream movies and series together with real-time chat on SL-FLIX.`;
+    const hostUrl = `${window.location.protocol}//${window.location.host}`;
+    const url = window.location.href;
+    const image = `${hostUrl}/icons/slflix.png`;
+
+    document.title = title;
+    const setMeta = (property: string, content: string, isName: boolean = false) => {
+        let el: HTMLMetaElement | null = isName 
+            ? document.querySelector(`meta[name="${property}"]`) as HTMLMetaElement
+            : document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+        if (!el) {
+            el = document.createElement('meta');
+            if (!isName) el.setAttribute('property', property);
+            else el.setAttribute('name', property);
+            document.head.appendChild(el);
+        }
+        el.setAttribute('content', content);
+    };
+    setMeta('description', description, true);
+    setMeta('og:title', title);
+    setMeta('og:description', description);
+    setMeta('og:image', image);
+    setMeta('og:url', url);
+    setMeta('og:type', 'website');
+    setMeta('twitter:card', 'summary_large_image', true);
+    setMeta('twitter:title', title, true);
+    setMeta('twitter:description', description, true);
+};
+
 export const resetToHomeSEO = () => {
     updateMetaTags(null, true);
 };
